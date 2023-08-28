@@ -1,8 +1,21 @@
-Expose deployment:
-[ec2-user@ip-172-31-93-255 ~]$ kubectl get deployments --namespace=monitoring
-NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
-prometheus-deployment   1/1     1            1           14s
-[ec2-user@ip-172-31-93-255 ~]$ kubectl get pods -n monitoring
-NAME                                    READY   STATUS    RESTARTS   AGE
-prometheus-deployment-96898bbc9-2cjnv   1/1     Running   0          101s
-
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  prometheus.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+               "access":"proxy",
+                "editable": true,
+                "name": "prometheus",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus-service.monitoring.svc:8080",
+                "version": 1
+            }
+        ]
+    }
